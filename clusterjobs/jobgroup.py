@@ -22,6 +22,15 @@ class JobBatch(object):
         assert job.name not in self.jobs_byname, 'error: {} already in {}'.format(job.name, self.jobs_byname)
         self.jobs_byname[job.name] = job
 
+    def add_grp(self, grp):
+        for jobname, job in grp.jobs_byname.items():
+            if jobname in self.jobs_byname:
+                myjob = self.jobs_byname[jobname]
+                assert myjob == job
+            else:
+                self.jobs_byname[jobname] = job
+
+
     def update_group(self):
         """ For each job, determine if the job status.
 
