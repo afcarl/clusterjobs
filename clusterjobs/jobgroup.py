@@ -38,6 +38,7 @@ class JobBatch(object):
         """
         running = self.env.running_jobs()
         running_names = set([name for name, jobid in running])
+
         for job in self.jobs:
             if job.name in running_names:
                 job.status = 'running'
@@ -87,14 +88,34 @@ class JobBatch(object):
             script += job.command() + '\n'
         return script
 
-    def print_status(self):
+    def print_status(self, done=True, waiting=True):
         statuses = {'ready'   : '{}READY{}'.format(gfx.yellow, gfx.end),
                     'waiting' : '{}WAIT {}'.format(gfx.red,    gfx.end),
                     'finished': '{}DONE {}'.format(gfx.green,  gfx.end),
                     'running' : '{}ON   {}'.format(gfx.blue,   gfx.end),
                     'unknonw' : '{}???  {}'.format(gfx.grey,   gfx.end)}
+        counts = {'ready'   : 0,
+                  'waiting' : 0,
+                  'finished': 0,
+                  'running' : 0,
+                  'unknonw' : 0}
+
         for job in self.jobs:
-            print(statuses[job.status], ' ', job.name)
+            counts[job.status] += 1
+            if job.status == 'finished':
+                if done:
+                    print(statuses[job.status], ' ', job.name)
+            elif job.status == 'waiting':
+                if waiting:
+                    print(statuses[job.status], ' ', job.name)
+            else:
+                print(statuses[job.status], ' ', job.name)
+
+        print('done/on/ready/waiting: {}/{}/{}/{}'.format(
+                gfx.green  + str(counts['finished']) + gfx.end,
+                gfx.blue   + str(counts['running'] ) + gfx.end,
+                gfx.yellow + str(counts['ready']   ) + gfx.end,
+                gfx.red    + str(counts['waiting'] ) + gfx.end))
 
     def create_directories(self):
         filepaths = []
