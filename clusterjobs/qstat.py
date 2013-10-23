@@ -22,6 +22,7 @@ def get_running_jobs(owner):
         p = subprocess.Popen(["qstat", "-x"], stdout=subprocess.PIPE)
         stdout, stderr = p.communicate()
     except OSError:
+        print("# warning: error executing qstat")
         return tuple()
 
     try:
@@ -37,4 +38,3 @@ def get_running_jobs(owner):
             my_jobs.append((job.find('Job_Name').text, job.find('Job_Id')))
 
     return my_jobs
-
