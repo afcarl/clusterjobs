@@ -46,17 +46,11 @@ class Job(object):
         """Return a list of the files created after completion"""
         return self._output_files
 
-    def abspath(self, filepath):
-        filepath = os.path.expanduser(filepath)
-        if not os.path.isabs(filepath):
-            filepath = os.path.join(self.context.dir, filepath)
-        return datafile.normpath(filepath)
-
     def add_input_file(self, filepath):
-        self._input_files.append(self.abspath(filepath))
+        self._input_files.append(filepath)
 
     def add_output_file(self, filepath):
-        self._output_files.append(self.abspath(filepath))
+        self._output_files.append(filepath)
 
     def qsub_options(self):
         if 'qsub.resources' in self.cfg:
@@ -64,7 +58,6 @@ class Job(object):
             if len(options) > 0:
                 return ' -l {} '.format(','.join(sorted(options)))
         return ''
-
 
     # def status(self):
     #     """ Return the job status

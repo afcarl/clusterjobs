@@ -9,7 +9,7 @@ def normpath(path):
 
 def buildpath(filepath, directory):
     filepath = os.path.expanduser(filepath)
-    if not os.path.isabs(filepath):
+    if directory != '' and not os.path.isabs(filepath):
         filepath = os.path.join(directory, filepath)
     return normpath(filepath)
 

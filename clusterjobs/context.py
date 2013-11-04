@@ -1,5 +1,6 @@
 import os
 
+from . import datafile 
 from . import qstat
 
 
@@ -17,16 +18,38 @@ class Env(object):
 
 class Context(object):
 
-    def __init__(self, rootdir):
-        self.dir = os.path.expanduser(rootdir)
-        self._prepare()
+    def __init__(self, rootdir, reldir):
+        self.rootdir = os.path.expanduser(rootdir)
+        self.reldir  = os.path.expanduser(reldir)
+        self.fulldir = os.path.join(rootdir, reldir)
         self.qsub = qstat.qsub_available()
 
-    def _prepare(self):
-        if not os.path.exists(self.dir):
-            os.makedirs(self.dir)
-        assert os.path.isdir(self.dir)
+    # def _prepare(self):
+    #     if not os.path.exists(self.dir):
+    #         os.makedirs(self.dir)
+    #     assert os.path.isdir(self.dir)
 
     def file_exists(self, rel_filepath):
         assert not os.path.isabs(rel_filepath)
-        return os.path.isfile(os.path.join(self.dir, rel_filepath))
+        return os.path.isfile(os.path.join(self.fulldir, rel_filepath))
+
+    def fullpath(self, filepath):
+        """Return the filepath prefixed py fulldir"""
+        filepath = os.path.expanduser(filepath)
+        if not os.path.isabs(filepath):
+            filepath = os.path.join(self.fulldir, filepath)
+        return datafile.normpath(filepath)
+
+    def rootpath(self, filepath):
+        """Retur the filepath prefixed py rootdir"""
+        filepath = os.path.expanduser(filepath)
+        if not os.path.isabs(filepath):
+            filepath = os.path.join(self.rootdir, filepath)
+        return datafile.normpath(filepath)
+
+    def relpath(self, filepath):
+        """Return the filepath prefixed by reldir"""
+        filepath = os.path.expanduser(filepath)
+        if not os.path.isabs(filepath):
+            filepath = os.path.join(self.reldir, filepath)
+        return os.path.normpath(filepath)

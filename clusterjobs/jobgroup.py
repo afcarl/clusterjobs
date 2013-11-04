@@ -57,14 +57,14 @@ class JobBatch(object):
     def update_job(self, job):
         """We assume that if a job is running, its status is already set and updated."""
         if not job.uptodate:
-            if all(self.env.file_exists(output_file) for output_file in job.output_files):
+            if all(self.env.file_exists(job.context.rootpath(output_file)) for output_file in job.output_files):
                 job.status = 'finished'
             else:
                 depjobs = [self._inflate_dep(dep) for dep in job.dependencies]
                 for dep in depjobs:
                     self.update_job(dep)
                 if (all(dep.status == 'finished' for dep in depjobs)
-                    and all(self.env.file_exists(input_file) for input_file in job.input_files)):
+                    and all(self.env.file_exists(job.context.rootpath(input_file)) for input_file in job.input_files)):
                     job.status = 'ready'
                 else:
                     job.status = 'waiting'
@@ -121,7 +121,7 @@ class JobBatch(object):
         filepaths = []
         for job in self.jobs:
             for outfile in job.output_files:
-                filepaths.append(outfile)
+                filepaths.append(job.context.rootpath(outfile))
             for infile in job.input_files:
-                filepaths.append(infile)
+                filepaths.append(job.context.rootpath(infile))
         datafile.create_directories(filepaths)
