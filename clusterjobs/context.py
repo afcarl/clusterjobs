@@ -14,7 +14,7 @@ class Env(object):
         return qstat.get_running_jobs(self.user)
 
     def file_exists(self, filepath):
-        return os.path.isfile(filepath)
+        return os.path.isfile(filepath) or os.path.isfile(filepath+'.bz2')
 
 class Context(object):
 
@@ -31,7 +31,8 @@ class Context(object):
 
     def file_exists(self, rel_filepath):
         assert not os.path.isabs(rel_filepath)
-        return os.path.isfile(os.path.join(self.fulldir, rel_filepath))
+        filepath = os.path.join(self.fulldir, rel_filepath)
+        return os.path.isfile(filepath) or os.path.isfile(filepath+'.bz2')
 
     def fullpath(self, filepath):
         """Return the filepath prefixed py fulldir"""

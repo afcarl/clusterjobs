@@ -88,7 +88,7 @@ class JobBatch(object):
             script += job.command() + '\n'
         return script
 
-    def print_status(self, done=True, waiting=True):
+    def print_status(self, done=True, waiting=True, quiet=False):
         statuses = {'ready'   : '{}READY{}'.format(gfx.yellow, gfx.end),
                     'waiting' : '{}WAIT {}'.format(gfx.red,    gfx.end),
                     'finished': '{}DONE {}'.format(gfx.green,  gfx.end),
@@ -102,18 +102,19 @@ class JobBatch(object):
 
         for job in self.jobs:
             counts[job.status] += 1
-            if job.status == 'finished':
-                if done:
+            if not quiet:
+                if job.status == 'finished':
+                    if done:
+                        print(statuses[job.status], ' ', job.name)
+                elif job.status == 'waiting':
+                    if waiting:
+                        print(statuses[job.status], ' ', job.name)
+                else:
                     print(statuses[job.status], ' ', job.name)
-            elif job.status == 'waiting':
-                if waiting:
-                    print(statuses[job.status], ' ', job.name)
-            else:
-                print(statuses[job.status], ' ', job.name)
 
         print('done/on/ready/waiting: {}/{}/{}/{}'.format(
                 gfx.green  + str(counts['finished']) + gfx.end,
-                gfx.blue   + str(counts['running'] ) + gfx.end,
+                gfx.cyan   + str(counts['running'] ) + gfx.end,
                 gfx.yellow + str(counts['ready']   ) + gfx.end,
                 gfx.red    + str(counts['waiting'] ) + gfx.end))
 

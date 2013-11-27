@@ -1,6 +1,7 @@
 import os
 import cPickle
 import treedict
+import bz2
 
 from toolbox import gfx
 
@@ -24,17 +25,28 @@ def create_directories(filepaths):
             os.makedirs(path)
 
 def load_file(filename, directory='', typename='unknown', verbose=True):
+    """Compressed version of the file is searched first."""
     filepath = buildpath(filename, directory)
-    with open(filepath, 'r') as f:
-        data = cPickle.load(f)
+    try:
+        with open(filepath+'.bz2', 'rb') as fp:
+            data_bz2 = bz2.decompress(fp.read())
+            data = cPickle.loads(data_bz2)
+    except IOError:
+        with open(filepath, 'rb') as f:
+            data = cPickle.load(f)
+
     if verbose:
         print('{}exp:{} compiled {} loaded in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
     return data
 
-def save_file(data, filename, directory='', typename='unknown', verbose=True):
+def save_file(data, filename, directory='', typename='unknown', verbose=True, compressed=True):
     filepath = buildpath(filename, directory)
-    with open(filepath,'w') as f:
-        cPickle.dump(data, f)
+    if compressed:
+        with open(filepath+'.bz2', 'wb') as fp:
+            fp.write(bz2.compress(cPickle.dumps(data, cPickle.HIGHEST_PROTOCOL),9))
+    else:    
+        with open(filepath,'wb') as f:
+            cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)
     if verbose:
         print('{}exp:{} compiled {} saved in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
 
