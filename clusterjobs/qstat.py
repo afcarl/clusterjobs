@@ -35,6 +35,6 @@ def get_running_jobs(owner):
     my_jobs = []
     for job in jobs:
         if owner+'@' == job.find('Job_Owner').text[:len(owner+'@')]:
-            my_jobs.append((job.find('Job_Name').text, job.find('Job_Id')))
+            my_jobs.append((job.find('Job_Name').text, job.find('Job_Id').text, job.find('job_state').text))
 
     return my_jobs

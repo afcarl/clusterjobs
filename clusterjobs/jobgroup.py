@@ -37,7 +37,7 @@ class JobBatch(object):
             The status of a job can be finished|running|ready|waiting|unknown.
         """
         running = self.env.running_jobs()
-        running_names = set([name for name, jobid in running])
+        running_names = set([name for name, jobid, state in running])
 
         for job in self.jobs:
             if job.name in running_names:
@@ -57,12 +57,16 @@ class JobBatch(object):
     def update_job(self, job):
         """We assume that if a job is running, its status is already set and updated."""
         if not job.uptodate:
+            # for output_file in job.output_files:
+            #         print(self.env.file_exists(job.context.rootpath(output_file)), output_file, job.context.rootpath(output_file))
             if all(self.env.file_exists(job.context.rootpath(output_file)) for output_file in job.output_files):
                 job.status = 'finished'
             else:
                 depjobs = [self._inflate_dep(dep) for dep in job.dependencies]
                 for dep in depjobs:
                     self.update_job(dep)
+                # for input_file in job.input_files:
+                #     print(self.env.file_exists(job.context.rootpath(input_file)), input_file, job.context.rootpath(input_file))
                 if (all(dep.status == 'finished' for dep in depjobs)
                     and all(self.env.file_exists(job.context.rootpath(input_file)) for input_file in job.input_files)):
                     job.status = 'ready'
