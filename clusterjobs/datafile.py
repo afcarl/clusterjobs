@@ -73,7 +73,7 @@ def load_config(filename, directory=''):
         except ValueError:
             pass
 
-    return forest.Treed(d)
+    return forest.Tree(d)
 
 def save_config(cfg, directory=''):
     filepath = buildpath(cfg.hardware.configfile, directory)
