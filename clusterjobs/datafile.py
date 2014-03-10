@@ -1,8 +1,8 @@
 import os
 import cPickle
-import treedict
 import bz2
 
+import forest
 from toolbox import gfx
 
 def normpath(path):
@@ -44,7 +44,7 @@ def save_file(data, filename, directory='', typename='unknown', verbose=True, co
     if compressed:
         with open(filepath+'.bz2', 'wb') as fp:
             fp.write(bz2.compress(cPickle.dumps(data, cPickle.HIGHEST_PROTOCOL),9))
-    else:    
+    else:
         with open(filepath,'wb') as f:
             cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)
     if verbose:
@@ -73,10 +73,9 @@ def load_config(filename, directory=''):
         except ValueError:
             pass
 
-    return treedict.TreeDict().fromdict(d)
+    return forest.Treed(d)
 
 def save_config(cfg, directory=''):
     filepath = buildpath(cfg.hardware.configfile, directory)
 
-    with open(filepath,'w') as f:
-        f.write(cfg.makeReport())
+    cfg._to_file(filepath)
