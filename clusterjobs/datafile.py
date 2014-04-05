@@ -5,8 +5,8 @@ import bz2
 import forest
 from toolbox import gfx
 
-def normpath(path):
-    return os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+def normpath(*path):
+    return os.path.normpath(os.path.abspath(os.path.expanduser(os.path.join(*path))))
 
 def buildpath(filepath, directory):
     filepath = os.path.expanduser(filepath)
