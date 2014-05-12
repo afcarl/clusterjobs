@@ -59,17 +59,6 @@ class Job(object):
                 return '-l {}'.format(','.join(sorted(options)))
         return ''
 
-    # def status(self):
-    #     """ Return the job status
-    #
-    #     finished: the output files exist.
-    #     running:  the job is visible on qsub output
-    #     ready:    the job is not running, but all dependencies are satisfied
-    #     waiting:  the job's dependencies are not finished yet.
-    #     unknown:  not known yet.
-    #     """
-    #     return 'unknown'
-
     def command(self):
         """Return the command line necessary to start the job"""
         raise NotImplementedError
