@@ -54,7 +54,7 @@ class Job(object):
 
     def qsub_options(self):
         if 'qsub.resources' in self.cfg:
-            options = ['{}={}'.format(key, value) for key, value in self.cfg.qsub.resources.items()]
+            options = ['{}={}'.format(key, value) for key, value in self.cfg.qsub.resources._items()]
             if len(options) > 0:
                 return '-l {}'.format(','.join(sorted(options)))
         return ''
