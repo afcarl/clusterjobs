@@ -19,7 +19,7 @@ def qsub_available():
 def get_running_jobs(owner):
     """Get running jobs from qstat from a specific owner"""
     try:
-        p = subprocess.Popen(["qstat", "-x"], stdout=subprocess.PIPE)
+        p = subprocess.Popen(["qstat", "-x", "-f", "inria"], stdout=subprocess.PIPE)
         stdout, stderr = p.communicate()
     except OSError:
         print("# warning: error executing qstat")
