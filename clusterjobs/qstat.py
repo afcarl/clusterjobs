@@ -18,23 +18,26 @@ def qsub_available():
 
 def get_running_jobs(owner):
     """Get running jobs from qstat from a specific owner"""
-    try:
-        p = subprocess.Popen(["qstat", "-x", "-f", "inria"], stdout=subprocess.PIPE)
-        stdout, stderr = p.communicate()
-    except OSError:
-        print("# warning: error executing qstat")
-        return tuple()
+    if qsub_available():
+        try:
+            p = subprocess.Popen(["qstat", "-x", "-f", "inria"], stdout=subprocess.PIPE)
+            stdout, stderr = p.communicate()
+        except OSError:
+            print("# warning: error executing qstat")
+            return tuple()
 
-    try:
-        jobs = ET.fromstring(stdout)
-    except ET.ParseError:
-        print("# warning: error parsing qstat xml output (of length {})".format(len(stdout)))
-        return []
+        try:
+            jobs = ET.fromstring(stdout)
+        except ET.ParseError:
+            print("# warning: error parsing qstat xml output (of length {})".format(len(stdout)))
+            return []
 
 
-    my_jobs = []
-    for job in jobs:
-        if owner+'@' == job.find('Job_Owner').text[:len(owner+'@')]:
-            my_jobs.append((job.find('Job_Name').text, job.find('Job_Id').text, job.find('job_state').text))
+        my_jobs = []
+        for job in jobs:
+            if owner+'@' == job.find('Job_Owner').text[:len(owner+'@')]:
+                my_jobs.append((job.find('Job_Name').text, job.find('Job_Id').text, job.find('job_state').text))
 
-    return my_jobs
+        return my_jobs
+
+    return []
