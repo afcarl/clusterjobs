@@ -17,6 +17,19 @@ class JobBatch(object):
         self.jobs = []
         self.jobs_byname = {}
 
+    def __contains__(self, v):
+        if v in self.jobs_byname:
+            return True
+        else:
+            try:
+                return v.name in self.jobs_byname
+            except AttributeError:
+                return False
+
+    def __iter__(self):
+        for job in self.jobs:
+            yield job
+
     def add_job(self, job):
         self.jobs.append(job)
         assert job.name not in self.jobs_byname, 'error: {} already in {}'.format(job.name, self.jobs_byname)
@@ -86,13 +99,17 @@ class JobBatch(object):
                 job_to_run.append(job)
         return sorted(job_to_run)
 
-    def run_script(self):
+    def run_script(self, job_names=None):
         script = ''
-        for job in self.to_run():
+        if job_names is not None:
+            jobs = [self.jobs_byname[job_name] for job_name in job_names]
+        else:
+            jobs = self.to_run()
+        for job in jobs:
             script += job.command() + '\n'
         return script
 
-    def print_status(self, done=True, waiting=True, quiet=False):
+    def print_status(self, done=True, waiting=True, quiet=False, job_subset=None):
         statuses = {'ready'   : '{}READY{}'.format(gfx.yellow, gfx.end),
                     'waiting' : '{}WAIT {}'.format(gfx.red,    gfx.end),
                     'finished': '{}DONE {}'.format(gfx.green,  gfx.end),
@@ -105,16 +122,17 @@ class JobBatch(object):
                   'unknonw' : 0}
 
         for job in self.jobs:
-            counts[job.status] += 1
-            if not quiet:
-                if job.status == 'finished':
-                    if done:
+            if job_subset is None or job.name in job_subset:
+                counts[job.status] += 1
+                if not quiet:
+                    if job.status == 'finished':
+                        if done:
+                            print(statuses[job.status], ' ', job.name)
+                    elif job.status == 'waiting':
+                        if waiting:
+                            print(statuses[job.status], ' ', job.name)
+                    else:
                         print(statuses[job.status], ' ', job.name)
-                elif job.status == 'waiting':
-                    if waiting:
-                        print(statuses[job.status], ' ', job.name)
-                else:
-                    print(statuses[job.status], ' ', job.name)
 
         print('done/on/ready/waiting: {}/{}/{}/{}'.format(
                 gfx.green  + str(counts['finished']) + gfx.end,
