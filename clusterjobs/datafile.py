@@ -24,7 +24,7 @@ def create_directories(filepaths):
         if not os.path.exists(path):
             os.makedirs(path)
 
-def load_file(filename, directory='', typename='unknown', verbose=True):
+def load_file(filename, directory='', typename='data', verbose=True):
     """Compressed version of the file is searched first."""
     filepath = buildpath(filename, directory)
     try:
@@ -36,10 +36,10 @@ def load_file(filename, directory='', typename='unknown', verbose=True):
             data = cPickle.load(f)
 
     if verbose:
-        print('{}exp:{} compiled {} loaded in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
+        print('{}exp:{} {} loaded in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
     return data
 
-def save_file(data, filename, directory='', typename='unknown', verbose=True, compressed=True):
+def save_file(data, filename, directory='', typename='data', verbose=True, compressed=True):
     filepath = buildpath(filename, directory)
     if compressed:
         with open(filepath+'.bz2', 'wb') as fp:
@@ -48,16 +48,16 @@ def save_file(data, filename, directory='', typename='unknown', verbose=True, co
         with open(filepath,'wb') as f:
             cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)
     if verbose:
-        print('{}exp:{} compiled {} saved in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
+        print('{}exp:{} {} saved in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
 
 def save_text(text, filename, directory='', typename='text', verbose=True):
     filepath = buildpath(filename, directory)
     with open(filepath, 'w') as f:
         f.write(text)
     if verbose:
-        print('{}exp:{} text file saved in {}{}{}'.format(gfx.purple, gfx.grey, gfx.cyan, filepath, gfx.end))
+        print('{}exp:{} text saved in {}{}{}'.format(gfx.purple, gfx.grey, gfx.cyan, filepath, gfx.end))
 
-def load_config(filename, directory=''):
+def load_config(filename, directory='', verbose=True):
     filepath = buildpath(filename, directory)
 
     with open(filepath,'r') as f:
@@ -72,6 +72,9 @@ def load_config(filename, directory=''):
             d[key] = value
         except ValueError:
             pass
+
+    if verbose:
+        print('{}exp:{} config loaded in {}{}{}'.format(gfx.purple, gfx.grey, gfx.cyan, filepath, gfx.end))
 
     return forest.Tree(d)
 
