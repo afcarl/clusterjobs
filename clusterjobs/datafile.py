@@ -1,6 +1,7 @@
 import os
 import cPickle
 import bz2
+import tempfile
 
 import forest
 from toolbox import gfx
@@ -31,6 +32,9 @@ def load_file(filename, directory='', typename='data', verbose=True):
         with open(filepath+'.bz2', 'rb') as fp:
             data_bz2 = bz2.decompress(fp.read())
             data = cPickle.loads(data_bz2)
+    except EOFError:
+        os.remove(filepath+'.bz2')
+        raise EOFError('the file seemed corrupt and was deleted.')
     except IOError:
         with open(filepath, 'rb') as f:
             data = cPickle.load(f)
@@ -41,12 +45,15 @@ def load_file(filename, directory='', typename='data', verbose=True):
 
 def save_file(data, filename, directory='', typename='data', verbose=True, compressed=True):
     filepath = buildpath(filename, directory)
+    temp = tempfile.NamedTemporaryFile(delete=False)
+
     if compressed:
-        with open(filepath+'.bz2', 'wb') as fp:
-            fp.write(bz2.compress(cPickle.dumps(data, cPickle.HIGHEST_PROTOCOL),9))
+        temp.write(bz2.compress(cPickle.dumps(data, cPickle.HIGHEST_PROTOCOL),9))
+        filepath += '.bz2'
     else:
-        with open(filepath,'wb') as f:
-            cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL)
+        temp.write(cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL))
+
+    os.rename(temp.name, filepath)
     if verbose:
         print('{}exp:{} {} saved in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
 

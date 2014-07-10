@@ -78,8 +78,11 @@ class JobBatch(object):
                 depjobs = [self._inflate_dep(dep) for dep in job.dependencies]
                 for dep in depjobs:
                     self.update_job(dep)
+                # print(job.name)
+                # for dep in depjobs:
+                #     print(dep.name, dep.status)
                 # for input_file in job.input_files:
-                #     print(self.env.file_exists(job.context.rootpath(input_file)), input_file, job.context.rootpath(input_file))
+                #     print(self.env.file_exists(job.context.rootpath(input_file)), input_file)
                 if (all(dep.status == 'finished' for dep in depjobs)
                     and all(self.env.file_exists(job.context.rootpath(input_file)) for input_file in job.input_files)):
                     job.status = 'ready'
@@ -99,15 +102,17 @@ class JobBatch(object):
                 job_to_run.append(job)
         return sorted(job_to_run)
 
-    def run_script(self, job_names=None):
-        script = ''
+    def run_commands(self, job_names=None):
+        """Return a list of run commands"""
+        cmds = []
         if job_names is not None:
             jobs = [self.jobs_byname[job_name] for job_name in job_names]
         else:
             jobs = self.to_run()
-        for job in jobs:
-            script += job.command() + '\n'
-        return script
+        return [job.command() for job in jobs]
+
+    def run_script(self, job_names=None):
+        return '\n'.join(self.run_commands()) + '\n'
 
     def print_status(self, done=True, waiting=True, quiet=False, job_subset=None):
         statuses = {'ready'   : '{}READY{}'.format(gfx.yellow, gfx.end),
