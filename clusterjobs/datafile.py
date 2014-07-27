@@ -45,7 +45,7 @@ def load_file(filename, directory='', typename='data', verbose=True):
 
 def save_file(data, filename, directory='', typename='data', verbose=True, compressed=True):
     filepath = buildpath(filename, directory)
-    temp = tempfile.NamedTemporaryFile(delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=os.path.dirname(filepath), suffix='.tempfile', delete=False)
 
     if compressed:
         temp.write(bz2.compress(cPickle.dumps(data, cPickle.HIGHEST_PROTOCOL),9))
