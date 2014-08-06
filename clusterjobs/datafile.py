@@ -85,7 +85,7 @@ def load_config(filename, directory='', verbose=True):
 
     return forest.Tree(d)
 
-def save_config(cfg, directory=''):
-    filepath = buildpath(cfg.hardware.configfile, directory)
+def save_config(cfg, filename='', directory=''):
+    filepath = buildpath(filename, directory)
 
     cfg._to_file(filepath)
