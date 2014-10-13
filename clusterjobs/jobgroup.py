@@ -100,7 +100,7 @@ class JobBatch(object):
         for job in self.jobs:
             if job.status == 'ready':
                 job_to_run.append(job)
-        return sorted(job_to_run)
+        return job_to_run
 
     def run_commands(self, job_names=None):
         """Return a list of run commands"""
@@ -112,7 +112,7 @@ class JobBatch(object):
         return [job.command() for job in jobs]
 
     def run_script(self, job_names=None):
-        return '\n'.join(self.run_commands()) + '\n'
+        return '\n'.join(self.run_commands(job_names=job_names)) + '\n'
 
     def print_status(self, done=True, waiting=True, quiet=False, job_subset=None):
         statuses = {'ready'   : '{}READY{}'.format(gfx.yellow, gfx.end),
