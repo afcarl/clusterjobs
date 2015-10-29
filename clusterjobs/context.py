@@ -1,6 +1,6 @@
 import os
 
-from . import datafile 
+from . import datafile
 from . import qstat
 
 

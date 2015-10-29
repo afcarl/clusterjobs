@@ -4,7 +4,7 @@ import unittest
 import time
 import os
 
-import env
+import dotdot
 from clusterjobs import datafile
 
 user = os.path.expanduser('~')

@@ -3,13 +3,13 @@
 import random
 import os
 
-import testenv
+import dotdot
 from clusterjobs import job
 from clusterjobs import jobgroup
 from clusterjobs import context
 
 #ctxt = context.Context('/tmp/clusterjobs-{}/'.format(random.random()), 'fbenurea')
-env = context.Env(user = 'fbenurea')
+env = context.Env(user='fbenurea')
 
 class FirstJobs(job.Job):
 
