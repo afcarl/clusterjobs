@@ -3,10 +3,14 @@
 import os, sys
 sys.path.insert(0, os.path.abspath(os.path.join(__file__, '../../..')))
 
+
 import re
 import subprocess
 import xml.etree.ElementTree as ET
 #import config
+
+from toolbox import gfx
+
 
 is_qsub_available = None
 def qsub_available():
@@ -41,3 +45,7 @@ def get_running_jobs(owner):
         return my_jobs
 
     return []
+
+
+if qsub_available():
+    gfx.disable_colors()
