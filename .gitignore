@@ -1,3 +1,5 @@
+.fuse_hidden*
+
 *.py[cod]
 
 # C extensions
