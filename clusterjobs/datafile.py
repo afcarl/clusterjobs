@@ -1,7 +1,10 @@
 import os
-import cPickle
 import bz2
 import tempfile
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 import forest
 from toolbox import gfx
@@ -25,19 +28,22 @@ def create_directories(filepaths):
         if not os.path.exists(path):
             os.makedirs(path)
 
+def isfile(filepath):
+    return os.path.isfile(filepath) or os.path.isfile(filepath + '.bz2')
+
 def load_file(filename, directory='', typename='data', verbose=True):
     """Compressed version of the file is searched first."""
     filepath = buildpath(filename, directory)
     try:
         with open(filepath+'.bz2', 'rb') as fp:
             data_bz2 = bz2.decompress(fp.read())
-            data = cPickle.loads(data_bz2)
+            data = pickle.loads(data_bz2)
     except EOFError:
         os.remove(filepath+'.bz2')
         raise EOFError('the file seemed corrupt and was deleted.')
     except IOError:
         with open(filepath, 'rb') as f:
-            data = cPickle.load(f)
+            data = pickle.load(f)
 
     if verbose:
         print('{}exp:{} {} loaded in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
@@ -48,10 +54,10 @@ def save_file(data, filename, directory='', typename='data', verbose=True, compr
     temp = tempfile.NamedTemporaryFile(dir=os.path.dirname(filepath), suffix='.tempfile', delete=False)
 
     if compressed:
-        temp.write(bz2.compress(cPickle.dumps(data, cPickle.HIGHEST_PROTOCOL),9))
+        temp.write(bz2.compress(pickle.dumps(data, pickle.HIGHEST_PROTOCOL),9))
         filepath += '.bz2'
     else:
-        temp.write(cPickle.dump(data, f, cPickle.HIGHEST_PROTOCOL))
+        temp.write(pickle.dump(data, f, pickle.HIGHEST_PROTOCOL))
 
     os.rename(temp.name, filepath)
     if verbose:
