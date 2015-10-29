@@ -6,7 +6,7 @@ import versioneer
 setup(
     name         = "clusterjobs",
     version      = "1.0",
-    cmdclass     = versioneer.get_cmdclass()
+    cmdclass     = versioneer.get_cmdclass(),
     author       = "Fabien Benureau",
     author_email = "fabien.benureau@inria.fr",
     description  = "A python library for creating, scheduling and monitoring cluster jobs",
