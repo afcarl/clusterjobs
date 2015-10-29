@@ -4,10 +4,11 @@ from . import datafile
 class Job(object):
     """"""
 
-    def __init__(self, context, dependencies, args):
+    def __init__(self, context, dependencies, args, jobgroup=None):
         self.uptodate = False # if the job status is uptodate.
         self.context = context
         self._dependencies = dependencies
+        self.jobgroup = jobgroup
 
         self._name = ''
         self._input_files  = []
@@ -46,10 +47,15 @@ class Job(object):
         """Return a list of the files created after completion"""
         return self._output_files
 
-    def add_input_file(self, filepath):
+    def add_input_file(self, filepath, full=False):
+        """If full, then the relative pass is added as well. If not, only the rootpath matters"""
+        if full:
+            filepath = self.context.relpath(filepath)
         self._input_files.append(filepath)
 
-    def add_output_file(self, filepath):
+    def add_output_file(self, filepath, full=False):
+        if full:
+            filepath = self.context.relpath(filepath)
         self._output_files.append(filepath)
 
     def qsub_options(self):
@@ -70,4 +76,7 @@ class Job(object):
         return str(self.name)
 
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        return isinstance(other, Job) and self.__dict__ == other.__dict__
+
+    def __hash__(self):
+        return hash(self._name)

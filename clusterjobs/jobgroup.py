@@ -31,9 +31,10 @@ class JobBatch(object):
             yield job
 
     def add_job(self, job):
-        self.jobs.append(job)
-        assert job.name not in self.jobs_byname, 'error: {} already in {}'.format(job.name, self.jobs_byname)
-        self.jobs_byname[job.name] = job
+        if job not in self:
+            self.jobs.append(job)
+            assert job.name not in self.jobs_byname, 'error: {} already in {}'.format(job.name, self.jobs_byname)
+            self.jobs_byname[job.name] = job
 
     def add_grp(self, grp):
         for jobname, job in grp.jobs_byname.items():
@@ -67,7 +68,7 @@ class JobBatch(object):
             return self.jobs_byname[dep]
         return dep
 
-    def update_job(self, job):
+    def update_job(self, job, files_only=True):
         """We assume that if a job is running, its status is already set and updated."""
         if not job.uptodate:
             # for output_file in job.output_files:
@@ -83,7 +84,7 @@ class JobBatch(object):
                 #     print(dep.name, dep.status)
                 # for input_file in job.input_files:
                 #     print(self.env.file_exists(job.context.rootpath(input_file)), input_file)
-                if (all(dep.status == 'finished' for dep in depjobs)
+                if ((files_only or all(dep.status == 'finished' for dep in depjobs))
                     and all(self.env.file_exists(job.context.rootpath(input_file)) for input_file in job.input_files)):
                     job.status = 'ready'
                 else:
