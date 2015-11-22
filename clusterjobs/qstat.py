@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(__file__, '../../..')))
 
 import re
 import subprocess
-import xml.etree.ElementTree as ET
+import xml.etree.ElementSciConfig as ET
 #import config
 
 from toolbox import gfx

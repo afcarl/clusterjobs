@@ -6,7 +6,7 @@ try:
 except ImportError:
     import pickle
 
-import forest
+import scicfg
 from toolbox import gfx
 
 def normpath(*path):
@@ -89,7 +89,7 @@ def load_config(filename, directory='', verbose=True):
     if verbose:
         print('{}exp:{} config loaded in {}{}{}'.format(gfx.purple, gfx.grey, gfx.cyan, filepath, gfx.end))
 
-    return forest.Tree(d)
+    return scicfg.SciConfig(d)
 
 def save_config(cfg, filename='', directory=''):
     filepath = buildpath(filename, directory)
