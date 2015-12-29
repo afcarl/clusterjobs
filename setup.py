@@ -1,7 +1,12 @@
 import os
-from distutils.core import setup
+from setuptools import setup
 
 import versioneer
+
+def read(filename):
+    with open(os.path.join(os.path.dirname(__file__), filename), 'r') as f:
+        text = f.read()
+    return text
 
 setup(
     name         = "clusterjobs",
@@ -14,6 +19,6 @@ setup(
     keywords     = "clusters science",
     url          = "github.com/humm/clusterjobs",
     packages     = ['clusterjobs'],
-    #long_description=read('README'),
+    long_description=read('readme.md'),
     classifiers = [],
 )
