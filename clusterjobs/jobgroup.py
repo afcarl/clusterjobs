@@ -2,8 +2,7 @@ from __future__ import print_function
 
 from . import context
 from . import datafile
-
-from toolbox import gfx
+from . import color
 
 class JobBatch(object):
     """We assume that group are dependencies-tight."""
@@ -116,11 +115,11 @@ class JobBatch(object):
         return '\n'.join(self.run_commands(job_names=job_names)) + '\n'
 
     def print_status(self, done=True, waiting=True, quiet=False, job_subset=None):
-        statuses = {'ready'   : '{}READY{}'.format(gfx.yellow, gfx.end),
-                    'waiting' : '{}WAIT {}'.format(gfx.red,    gfx.end),
-                    'finished': '{}DONE {}'.format(gfx.green,  gfx.end),
-                    'running' : '{}ON   {}'.format(gfx.blue,   gfx.end),
-                    'unknonw' : '{}???  {}'.format(gfx.grey,   gfx.end)}
+        statuses = {'ready'   : '{}'.format(color.dye_out('READY', 'yellow')),
+                    'waiting' : '{}'.format(color.dye_out('WAIT ', 'red')),
+                    'finished': '{}'.format(color.dye_out('DONE ', 'green')),
+                    'running' : '{}'.format(color.dye_out('ON   ', 'blue')),
+                    'unknonw' : '{}'.format(color.dye_out('???  ', 'grey'))}
         counts = {'ready'   : 0,
                   'waiting' : 0,
                   'finished': 0,
@@ -141,10 +140,10 @@ class JobBatch(object):
                         print(statuses[job.status], ' ', job.name)
 
         print('done/on/ready/waiting: {}/{}/{}/{}'.format(
-                gfx.green  + str(counts['finished']) + gfx.end,
-                gfx.cyan   + str(counts['running'] ) + gfx.end,
-                gfx.yellow + str(counts['ready']   ) + gfx.end,
-                gfx.red    + str(counts['waiting'] ) + gfx.end))
+                color.dye_out(counts['finished'], 'green'),
+                color.dye_out(counts['running'], 'cyan'),
+                color.dye_out(counts['ready'], 'yellow'),
+                color.dye_out(counts['waiting'], 'red')))
 
     def create_directories(self):
         filepaths = []

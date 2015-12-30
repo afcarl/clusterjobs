@@ -7,7 +7,7 @@ except ImportError:
     import pickle
 
 import scicfg
-from toolbox import gfx
+from .color import COLORS_OUT as colors
 
 def normpath(*path):
     return os.path.normpath(os.path.abspath(os.path.expanduser(os.path.join(*path))))
@@ -46,7 +46,7 @@ def load_file(filename, directory='', typename='data', verbose=True):
             data = pickle.load(f)
 
     if verbose:
-        print('{}exp:{} {} loaded in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
+        print('{}exp:{} {} loaded in {}{}{}'.format(colors['magenta'], colors['grey'], typename, colors['cyan'], filepath, colors['end']))
     return data
 
 def save_file(data, filename, directory='', typename='data', verbose=True, compressed=True):
@@ -61,14 +61,14 @@ def save_file(data, filename, directory='', typename='data', verbose=True, compr
 
     os.rename(temp.name, filepath)
     if verbose:
-        print('{}exp:{} {} saved in {}{}{}'.format(gfx.purple, gfx.grey, typename, gfx.cyan, filepath, gfx.end))
+        print('{}exp:{} {} saved in {}{}{}'.format(colors['magenta'], colors['grey'], typename, colors['cyan'], filepath, colors['end']))
 
 def save_text(text, filename, directory='', typename='text', verbose=True):
     filepath = buildpath(filename, directory)
     with open(filepath, 'w') as f:
         f.write(text)
     if verbose:
-        print('{}exp:{} text saved in {}{}{}'.format(gfx.purple, gfx.grey, gfx.cyan, filepath, gfx.end))
+        print('{}exp:{} text saved in {}{}{}'.format(colors['magenta'], colors['grey'], colors['cyan'], filepath, colors['end']))
 
 def load_config(filename, directory='', verbose=True):
     filepath = buildpath(filename, directory)
@@ -87,7 +87,7 @@ def load_config(filename, directory='', verbose=True):
             pass
 
     if verbose:
-        print('{}exp:{} config loaded in {}{}{}'.format(gfx.purple, gfx.grey, gfx.cyan, filepath, gfx.end))
+        print('{}exp:{} config loaded in {}{}{}'.format(colors['magenta'], colors['grey'], colors['cyan'], filepath, colors['end']))
 
     return scicfg.SciConfig(d)
 
