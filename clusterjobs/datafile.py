@@ -37,7 +37,7 @@ def load_file(filename, directory='', typename='data', verbose=True):
     try:
         with open(filepath+'.bz2', 'rb') as fp:
             data_bz2 = bz2.decompress(fp.read())
-            data = pickle.loads(data_bz2)
+            data = pickle.loads(data_bz2, encoding='latin-1')
     except EOFError:
         os.remove(filepath+'.bz2')
         raise EOFError('the file seemed corrupt and was deleted.')
