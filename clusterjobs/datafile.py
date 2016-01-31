@@ -1,3 +1,4 @@
+import sys
 import os
 import bz2
 import tempfile
@@ -37,7 +38,10 @@ def load_file(filename, directory='', typename='data', verbose=True):
     try:
         with open(filepath+'.bz2', 'rb') as fp:
             data_bz2 = bz2.decompress(fp.read())
-            data = pickle.loads(data_bz2, encoding='latin-1')
+            if sys.version_info.major == 2:
+                data = pickle.loads(data_bz2)
+            else: # py3k
+                data = pickle.loads(data_bz2, encoding='latin-1')
     except EOFError:
         os.remove(filepath+'.bz2')
         raise EOFError('the file seemed corrupt and was deleted.')
@@ -53,11 +57,13 @@ def save_file(data, filename, directory='', typename='data', verbose=True, compr
     filepath = buildpath(filename, directory)
     temp = tempfile.NamedTemporaryFile(dir=os.path.dirname(filepath), suffix='.tempfile', delete=False)
 
+    # protocol=2 to be able to open file from py2k
+    protocol = 2
     if compressed:
-        temp.write(bz2.compress(pickle.dumps(data, pickle.HIGHEST_PROTOCOL),9))
+        temp.write(bz2.compress(pickle.dumps(data, protocol),9))
         filepath += '.bz2'
     else:
-        temp.write(pickle.dump(data, f, pickle.HIGHEST_PROTOCOL))
+        temp.write(pickle.dump(data, f, protocol))
 
     os.rename(temp.name, filepath)
     if verbose:
