@@ -99,7 +99,7 @@ def generate_colors(stream, color=True, bold=True, italic=True, force_colors=Fal
                 colors[name] = u'\033[38;5;{}m'.format(code)
                 colors[u'b'+name] = u'\033[{}38;5;{}m'.format(bold_flag, code)
                 colors[u'i'+name] = u'\033[{}38;5;{}m'.format(italic_flag, code)
-                colors[u'bi'+name] = u'\033[{}38;5;{}m'.format(bold_flag, italic_flag, code)
+                colors[u'bi'+name] = u'\033[{}{}38;5;{}m'.format(bold_flag, italic_flag, code)
 
             else:
                 if bold:

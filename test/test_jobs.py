@@ -8,7 +8,6 @@ from clusterjobs import job
 from clusterjobs import jobgroup
 from clusterjobs import context
 
-#ctxt = context.Context('/tmp/clusterjobs-{}/'.format(random.random()), 'fbenurea')
 env = context.Env(user='fbenurea')
 
 class FirstJobs(job.Job):
@@ -31,7 +30,7 @@ class SecondJobs(FirstJobs):
         self._name = self._filename
         self._dependencies = ['first/f{:02d}'.format(key)]
 
-ctxt = context.Context('/tmp/clusterjobs-000/')
+ctxt = context.Context('/tmp/clusterjobs-000/', 'test')
 
 jobgrp = jobgroup.JobBatch(env)
 for i in range(20, 0, -1):
