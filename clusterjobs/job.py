@@ -1,5 +1,3 @@
-import os
-from . import datafile
 
 class Job(object):
     """"""
@@ -14,8 +12,6 @@ class Job(object):
         self._input_files  = []
         self._output_files = []
         self.prepare(args)
-
-        status = 'unknown'
 
     def prepare(self, args):
         """ Probably a good time to initialize _name, _input_files

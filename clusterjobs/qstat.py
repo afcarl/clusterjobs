@@ -1,10 +1,5 @@
 """Preparing the context, and launching the qsub command appropriately"""
-
-import os, sys
-sys.path.insert(0, os.path.abspath(os.path.join(__file__, '../../..')))
-
-
-import re
+import os
 import subprocess
 import xml.etree.ElementTree as ET
 
@@ -22,7 +17,7 @@ def get_running_jobs(owner):
     if qsub_available():
         try:
             p = subprocess.Popen(["qstat", "-x", "-f", "inria"], stdout=subprocess.PIPE)
-            stdout, stderr = p.communicate()
+            stdout, _ = p.communicate()
         except OSError:
             print("# warning: error executing qstat")
             return tuple()

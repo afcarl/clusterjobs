@@ -1,8 +1,8 @@
 from __future__ import print_function
 
-from . import context
 from . import datafile
 from . import color
+
 
 class JobBatch(object):
     """We assume that group are dependencies-tight."""
@@ -63,7 +63,7 @@ class JobBatch(object):
             self.update_job(job)
 
     def _inflate_dep(self, dep):
-        if type(dep) is str:
+        if isinstance(dep, str):
             return self.jobs_byname[dep]
         return dep
 
@@ -104,7 +104,6 @@ class JobBatch(object):
 
     def run_commands(self, job_names=None):
         """Return a list of run commands"""
-        cmds = []
         if job_names is not None:
             jobs = [self.jobs_byname[job_name] for job_name in job_names]
         else:

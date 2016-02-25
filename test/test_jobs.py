@@ -1,6 +1,5 @@
 """Mock jobs for testing code"""
 
-import random
 import os
 
 import dotdot

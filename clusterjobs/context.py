@@ -13,7 +13,8 @@ class Env(object):
     def running_jobs(self):
         return qstat.get_running_jobs(self.user)
 
-    def file_exists(self, filepath):
+    @classmethod
+    def file_exists(cls, filepath):
         return os.path.isfile(filepath) or os.path.isfile(filepath+'.bz2')
 
 class Context(object):

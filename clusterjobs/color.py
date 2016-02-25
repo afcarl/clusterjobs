@@ -1,8 +1,6 @@
 """
 Code to handle colored text
-"""
 
-"""
 Here is a little explanation about bash color code, useful to understand
 the code below. See http://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 for a complete referece.
